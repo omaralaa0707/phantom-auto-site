@@ -1,0 +1,309 @@
+@import "tailwindcss";
+
+@theme {
+  /*
+   * Phantom Auto sell new-energy cars, and every frame they publish is shot on
+   * the same stretch of the Suez road at dusk. The ground here is that hazy
+   * sky — cool, bleached, almost colourless — so the only warmth on the page
+   * is their own gold mark and the red light bar every one of these cars wears
+   * across its tailgate.
+   */
+  --color-haze: #e8ecee;
+  --color-haze-2: #dbe1e4;
+  --color-haze-3: #c3ccd1; /* rules and hairlines only — 2.1:1, never text */
+  --color-slate: #161a1e; /* asphalt at dusk */
+  --color-slate-2: #21272c;
+  --color-ink: #0e1215;
+  --color-ink-2: #3a4248;
+  --color-ink-3: #5a646b; /* 5.1:1 on haze */
+  --color-chalk: #f4f7f8;
+  --color-chalk-2: #9aa6ad; /* 6.4:1 on slate */
+  /* Sampled from their profile mark. 8:1 on slate; unusable as text on haze. */
+  --color-gold: #d2b569;
+  --color-gold-lo: #6f4f0c; /* the same hue, darkened until it clears AA (6.3:1) */
+  /* Sampled from the tail-light bar on their BYD Han L rear frame. */
+  --color-volt: #f42421;
+  --color-volt-lo: #a81a10; /* 6.3:1 on haze */
+
+  --font-display: var(--font-sora), "Helvetica Neue", sans-serif;
+  --font-body: var(--font-bevietnam), system-ui, sans-serif;
+  --font-arabic: var(--font-changa), "Segoe UI", sans-serif;
+
+  --text-hero: clamp(2.6rem, 7.4vw, 7rem);
+  --text-display: clamp(1.75rem, 4.2vw, 3.5rem);
+  --text-section: clamp(1.35rem, 2.6vw, 2.1rem);
+  --text-lead: clamp(1rem, 1.1vw, 1.15rem);
+
+  --ease-surge: cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+@layer base {
+  /* The nav is fixed, so every anchor target has to clear it. */
+  section[id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  html {
+    background: var(--color-haze);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: auto;
+  }
+
+  body {
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  html[dir="rtl"] body {
+    font-family: var(--font-arabic);
+  }
+
+  ::selection {
+    background: var(--color-volt);
+    color: var(--color-chalk);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-volt-lo);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-volt);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+/* Their wordmark is a hard geometric caps setting with cut corners. That
+   treatment is reserved for eyebrows and plate labels. */
+@utility plate-label {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+/* A live current travelling along an edge. Used on hover states and the
+   primary call button, so the page's one moving colour is always the same. */
+@utility running-current {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-volt) 35%,
+    var(--color-gold) 50%,
+    var(--color-volt) 65%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: current-run 1.6s linear infinite;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* The full-width tail-light bar every car in their feed wears. Used as the
+   page's charge indicator, the fleet selector, and every section rule. */
+@utility light-bar {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-volt) 18%, transparent),
+    var(--color-volt) 22%,
+    var(--color-volt) 78%,
+    color-mix(in srgb, var(--color-volt) 18%, transparent)
+  );
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--color-volt) 55%, transparent),
+    0 0 26px color-mix(in srgb, var(--color-volt) 22%, transparent);
+}
+
+/*
+ * Motion signature: power-on. Nothing slides in and nothing is wiped or
+ * revealed — an element strikes like a filament, overshoots, drops, and
+ * settles. Two short blinks, then steady.
+ */
+@keyframes surge-in {
+  0% {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  20% {
+    opacity: 0.95;
+    transform: translateY(2px);
+  }
+  30% {
+    opacity: 0.22;
+    transform: translateY(2px);
+  }
+  46% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  57% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The bar charges from the leading edge with a hot cap that fades to a
+   resting hairline. */
+@keyframes bar-charge {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* Current running along an outline on hover. */
+@keyframes current-run {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes idle-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes surge-in {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes bar-charge {
+    from {
+      transform: none;
+      opacity: 1;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @keyframes idle-pulse {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * The reveal, driven by a data attribute the observer writes. Unlayered, so a
+ * Tailwind opacity utility on the same element cannot outrank the resting
+ * state.
+ * ------------------------------------------------------------------------ */
+
+[data-surge] {
+  opacity: 0;
+}
+
+[data-surge][data-seen] {
+  animation: surge-in 900ms var(--ease-surge) var(--surge-delay, 0ms) both;
+}
+
+[data-bar] {
+  transform: scaleX(0);
+}
+
+[data-bar][data-seen] {
+  animation: bar-charge 820ms var(--ease-surge) var(--surge-delay, 0ms) both;
+}
+
+/* ---------------------------------------------------------------------------
+ * Arabic corrections. Unlayered so they outrank Tailwind utilities, and keyed
+ * off [dir] rather than [lang] — browser translation rewrites lang.
+ * ------------------------------------------------------------------------ */
+
+html[dir="rtl"] .font-display {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+}
+
+html[dir="rtl"] .plate-label {
+  font-family: var(--font-arabic);
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+html[dir="rtl"] .text-hero {
+  font-size: clamp(2rem, 5.8vw, 5.2rem);
+  /* Changa sets its diacritics high; a tight line-height clips the damma on
+     "قُد" against whatever sits above it. */
+  line-height: 1.42;
+  padding-top: 0.12em;
+}
+
+html[dir="rtl"] .text-display {
+  font-size: clamp(1.5rem, 3.6vw, 2.9rem);
+  line-height: 1.36;
+}
+
+html[dir="rtl"] .text-section {
+  line-height: 1.45;
+}
+
+html[dir="rtl"] [class*="tracking-["],
+html[dir="rtl"] .tracking-widest,
+html[dir="rtl"] .tracking-wider {
+  letter-spacing: 0;
+}
+
+/* Latin model names, phone numbers and figures stay LTR inside Arabic copy. */
+.latin {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-display);
+}
+
+html[dir="rtl"] .latin {
+  font-family: var(--font-display);
+  /* `direction: ltr` on a block resolves `text-align: start` to left, which
+     would strand Latin model names on the wrong edge of an RTL page. */
+  text-align: right;
+}
