@@ -1,53 +1,73 @@
-# Phantom Auto — concept site
+# Phantom Auto — site 08 of 46
 
-A concept design for [Phantom Auto](https://www.instagram.com/phantomauto.egypt/),
-a verified new-energy dealership on the Suez road east of Cairo. **Not an
-official site and not affiliated with them.** Every photograph, mark and quoted
-line is theirs, taken from their own Instagram; nothing on the page claims
-anything they did not publish themselves.
+A concept site built entirely from this dealership's own published material.
+**Not affiliated with Phantom Auto, and not an official site.**
 
-## The idea
+- **Live:** https://phantom-auto-site.vercel.app
+- **Repo:** [phantom-auto-site](https://github.com/omaralaa0707/phantom-auto-site)
 
-Their whole feed is one shoot: thirteen cars on the same stretch of asphalt, in
-the same half-hour of dusk light, and almost every rear frame shows the
-full-width red tail-light bar this generation of cars wears. That bar is the
-site's one piece of chrome — it is the scroll indicator, the section rule, and
-the fleet selector.
+## What this page is about
 
-- **Palette** — the hazy, cool dusk sky sampled from their frames, with their
-  gold mark and a tail-light red taken from the BYD Han L's light bar.
-- **Type** — Sora for display, Be Vietnam Pro for text, Changa for Arabic.
-- **Motion** — power-on. Nothing slides; elements strike like a filament,
-  overshoot and settle, and a current runs along edges on hover.
+Every site in this series is built around something true and checkable about
+the dealer's own account — a pattern in what they publish, a contradiction
+between two of their channels, or a fact about their showroom — rather than
+around a generic template. The palette, type, 3D piece and motion below were
+all chosen to serve that finding.
 
-## The hero
+## Design record
 
-`src/components/webgl/fluid.ts` is a real-time incompressible-fluid solver
-written directly against WebGL2 — advection, curl, vorticity confinement,
-divergence, a Jacobi pressure solve and gradient subtraction, all in half-float
-render targets ping-ponging between two attachments. The pointer injects
-velocity and dye into the field; the dye modulates their photograph, restoring
-saturation and rippling the paint where the current runs.
+**Palette**
+: Cool bleached dusk sky (haze #E8ECEE) — the first *cool* light ground in the set — over asphalt #161A1E, with their sampled gold #D2B569 and the tail-light red #F42421 lifted from the BYD Han L's rear bar
 
-It probes for a renderable `RG16F` attachment before it creates anything, and
-falls back to the plain photograph when WebGL2, float render targets or the
-context itself are unavailable, or when the visitor has asked for reduced
-motion.
+**Type pairing**
+: Sora + Be Vietnam Pro / Changa (AR)
 
-## Integrity rules the content follows
+**3D / signature technique**
+: Real-time incompressible-fluid solver in **raw WebGL2** (no three.js): advection, curl, vorticity confinement, divergence, an 18-step Jacobi pressure solve and gradient subtraction, ping-ponging half-float render targets; pointer and scroll inject velocity + dye, and the dye field restores saturation and ripples the paint on their own photograph
 
-- The line under each car is the line **they** wrote in that car's own post,
-  linked back to it. Where the locale differs from the language they wrote in,
-  the page says so.
-- The "Authorized dealer" badge appears only where their caption says it.
-  Five of the thirteen models are simply "available now at Phantom Auto".
-- Four marques in their bio have no car in the last forty posts, so they are
-  listed as names with no photograph attached. Four marques in the feed are not
-  in the bio, and the page says that too.
+**Motion language**
+: Power-on: elements strike like a filament, overshoot, drop and settle — nothing slides, nothing is wiped; a current runs along edges on hover, and one tail-light bar serves as scroll indicator, section rule and fleet selector
+
+## Sources
+
+Everything on the page was sourced from:
+
+- Instagram: https://www.instagram.com/phantomauto.egypt/
+- Google Maps: https://www.google.com/maps/search/?api=1&query=Phantom+Auto+Cairo
+
+Photography belongs to the dealership (or, where their frames are watermarked
+by an outside studio, to that studio) and is used here only to document their
+own published material. No figure on the page is invented: anything the dealer
+did not publish is marked as unpublished rather than estimated.
 
 ## Running it
 
-```
+```bash
 pnpm install
-pnpm dev
+pnpm dev      # http://localhost:3000
+pnpm build    # production build — must pass before shipping
+pnpm lint     # eslint, zero warnings
 ```
+
+Requires `node-linker=hoisted` in `.npmrc` (already present) or three.js peer
+deps fail to resolve.
+
+## Structure
+
+```
+src/content/media.ts      verified facts and figures — the data layer
+src/content/en.ts|ar.ts   all copy, both locales, identical shapes
+src/content/schema-ext.ts the page-specific content contract
+src/components/webgl/     the 3D piece
+src/components/site/      the page composition
+src/app/globals.css       palette tokens, type, RTL overrides, motion
+```
+
+Arabic/English toggle with full RTL. All CSS direction overrides key off
+`[dir="rtl"]` (never `[lang]`) and live outside `@layer`. Every Latin or
+numeric fragment inside Arabic copy is wrapped in `.latin` for correct bidi.
+
+---
+
+Part of a 46-site series. See the [top-level README](../README.md) for the full
+index and [`TRACKING.md`](../TRACKING.md) for the differentiation log.
