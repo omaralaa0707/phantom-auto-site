@@ -73,8 +73,6 @@ export type SiteContent = {
     cta: string;
   };
   footer: {
-    /** Bilingual disclaimer: these are concept sites, not official ones. */
-    disclaimer: string;
     rights: string;
   };
   a11y: {

@@ -181,9 +181,7 @@ export const en: PhantomContent = {
   },
 
   footer: {
-    disclaimer:
-      "A concept design, built as a demonstration. Not an official Phantom Auto site, and not affiliated with them. All photography, marks and quoted copy belong to Phantom Auto.",
-    rights: "Concept by Claude",
+    rights: "© Phantom Auto. All rights reserved.",
   },
 
   a11y: {
